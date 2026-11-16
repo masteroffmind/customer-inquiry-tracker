@@ -1,3 +1,13 @@
 spring:
   application:
-    name: Customer Inquiry Tracker
+    name: customer-inquiry-tracker
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate #БД создается только миграциями FlyWay
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

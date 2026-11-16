@@ -12,7 +12,7 @@ description = "Customer Inquiry Tracker"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -38,6 +38,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
 }
 
 kotlin {
