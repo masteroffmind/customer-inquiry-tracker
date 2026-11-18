@@ -2,8 +2,9 @@ package com.rakhman.customerinquirytracker.inquiry
 
 import com.rakhman.customerinquirytracker.inquiry.dto.CreateInquiryRequest
 import com.rakhman.customerinquirytracker.inquiry.dto.InquiryResponse
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,4 +27,12 @@ class InquiryController (
         val location = URI.create("/api/v1/inquiries/${response.id}")//Построение адреса конкретного обращения
         return ResponseEntity.created(location).body(response)//Собирает полноценный HTTP-ответ со статусом Created, заголовком и DTO в теле
     }
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: Long): ResponseEntity<InquiryResponse> {
+       val response = inquiryService.getById(id)
+        return ResponseEntity.ok(response.toResponse())
+    }
+    /**
+     * Сервис вовзращает найденный inquiry, а контроллер преобразует его в dto и отпрвляет с 200
+     */
 }

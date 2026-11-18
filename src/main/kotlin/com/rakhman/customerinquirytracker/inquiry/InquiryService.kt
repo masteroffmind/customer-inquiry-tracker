@@ -1,5 +1,6 @@
 package com.rakhman.customerinquirytracker.inquiry
 
+import com.rakhman.customerinquirytracker.inquiry.dto.InquiryResponse
 import org.springframework.stereotype.Service
 
 //Позволит Spring обнаруживать класс, параметр
@@ -17,5 +18,9 @@ class InquiryService(
     fun create(title:String, customerName: String, customerEmail: String): Inquiry {
         val inquiry = Inquiry(title, customerName, customerEmail)
         return inquiryRepository.save(inquiry)
+    }
+    fun getById(id:Long) : Inquiry{
+        return inquiryRepository.findById(id)
+            .orElseThrow{InquiryNotFoundException(id)}
     }
 }
