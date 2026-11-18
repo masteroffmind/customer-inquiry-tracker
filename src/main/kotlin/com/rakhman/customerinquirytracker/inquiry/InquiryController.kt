@@ -4,6 +4,7 @@ import com.rakhman.customerinquirytracker.inquiry.dto.CreateInquiryRequest
 import com.rakhman.customerinquirytracker.inquiry.dto.InquiryResponse
 import com.rakhman.customerinquirytracker.inquiry.dto.UpdateInquiryRequest
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -42,4 +43,14 @@ class InquiryController (
         val response = inquiryService.update(id, request)
         return ResponseEntity.ok(response.toResponse())
     }
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long): ResponseEntity<Void>{
+        /**
+         * Void даст нам ответ без DTO,coContent даст 204 статус, который
+         * означает, что сервер обработал успешно обработал запрос, но не вернул ответ
+         */
+        inquiryService.delete(id)
+        return ResponseEntity.noContent().build()
+    }
+
 }

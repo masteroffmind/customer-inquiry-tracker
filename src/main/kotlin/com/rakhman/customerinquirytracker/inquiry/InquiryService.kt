@@ -48,4 +48,9 @@ class InquiryService(
         }
         return existingInquiry
     }
+    @Transactional
+    fun delete(id:Long) {
+        val inquiry = getById(id)
+        inquiryRepository.delete(inquiry)
+    }
 }
