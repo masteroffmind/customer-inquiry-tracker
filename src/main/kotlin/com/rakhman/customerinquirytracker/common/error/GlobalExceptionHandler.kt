@@ -1,6 +1,7 @@
 package com.rakhman.customerinquirytracker.common.error
 
 import com.rakhman.customerinquirytracker.inquiry.InquiryNotFoundException
+import com.rakhman.customerinquirytracker.inquiry.InvalidStatusTransitionException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -25,4 +26,12 @@ class GlobalExceptionHandler {
      * Spring находит метод с аннотацией ExceptionHandler и передает ему исключение
      * в свою очередь метод создает ProblemDetail, а Spring отправляет его клиенту со статусом 404
      */
+
+    @ExceptionHandler(InvalidStatusTransitionException::class)
+    fun handleInvalidStatusTransitionException(exception: InvalidStatusTransitionException): ProblemDetail {
+        return ProblemDetail.forStatusAndDetail(
+            HttpStatus.CONFLICT,
+            exception.message ?: "Invalid status transition"
+        )
+    }
 }

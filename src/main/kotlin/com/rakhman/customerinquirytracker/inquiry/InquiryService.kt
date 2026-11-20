@@ -1,5 +1,6 @@
 package com.rakhman.customerinquirytracker.inquiry
 
+import com.rakhman.customerinquirytracker.inquiry.dto.ChangeStatusRequest
 import com.rakhman.customerinquirytracker.inquiry.dto.UpdateInquiryRequest
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.stereotype.Service
@@ -52,5 +53,26 @@ class InquiryService(
     fun delete(id:Long) {
         val inquiry = getById(id)
         inquiryRepository.delete(inquiry)
+    }
+
+    @Transactional
+    fun changeStatus(id:Long, newStatus: InquiryStatus): Inquiry {
+        val inquiry = getById(id)
+
+        val allowed = when(inquiry.status) {
+            InquiryStatus.NEW -> newStatus == InquiryStatus.IN_PROGRESS
+            InquiryStatus.IN_PROGRESS -> newStatus == InquiryStatus.RESOLVED
+            InquiryStatus.RESOLVED -> newStatus == InquiryStatus.IN_PROGRESS || newStatus == InquiryStatus.CLOSED
+            InquiryStatus.CLOSED ->  false
+        }
+        if(!allowed) {
+            throw InvalidStatusTransitionException(inquiry.status, newStatus)
+            /**
+             * RuntimeException используют, когда операция не может продолжаться из-за ошибки
+             * или неподходящего состояния.
+             */
+        }
+        inquiry.status = newStatus
+        return inquiry
     }
 }
