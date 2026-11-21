@@ -4,6 +4,7 @@ import com.rakhman.customerinquirytracker.inquiry.dto.ChangeStatusRequest
 import com.rakhman.customerinquirytracker.inquiry.dto.CreateInquiryRequest
 import com.rakhman.customerinquirytracker.inquiry.dto.InquiryResponse
 import com.rakhman.customerinquirytracker.inquiry.dto.UpdateInquiryRequest
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +27,10 @@ class InquiryController (
     private val inquiryService: InquiryService
 ){
     @PostMapping
-    fun create(@RequestBody request: CreateInquiryRequest): ResponseEntity<InquiryResponse> {
+    fun create(@Valid @RequestBody request: CreateInquiryRequest): ResponseEntity<InquiryResponse> {
+        /**
+         * аннотация Valid включает проверку ограничений DTO, обращаясь к полям, которые покрыты аннотациями
+         */
         val savedInquiry = inquiryService.create(title = request.title, customerName = request.customerName, customerEmail = request.customerEmail)
         val response = savedInquiry.toResponse()//Собирает DTO
         val location = URI.create("/api/v1/inquiries/${response.id}")//Построение адреса конкретного обращения
@@ -41,7 +45,7 @@ class InquiryController (
         return ResponseEntity.ok(response.toResponse())
     }
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody request: UpdateInquiryRequest): ResponseEntity<InquiryResponse> {
+    fun update(@PathVariable id: Long, @Valid @RequestBody request: UpdateInquiryRequest): ResponseEntity<InquiryResponse> {
         val response = inquiryService.update(id, request)
         return ResponseEntity.ok(response.toResponse())
     }

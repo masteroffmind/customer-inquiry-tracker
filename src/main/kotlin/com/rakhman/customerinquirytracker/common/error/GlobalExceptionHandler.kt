@@ -4,6 +4,7 @@ import com.rakhman.customerinquirytracker.inquiry.InquiryNotFoundException
 import com.rakhman.customerinquirytracker.inquiry.InvalidStatusTransitionException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -34,4 +35,24 @@ class GlobalExceptionHandler {
             exception.message ?: "Invalid status transition"
         )
     }
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidation(exception: MethodArgumentNotValidException): ProblemDetail {
+        val problem = ProblemDetail.forStatusAndDetail(
+            HttpStatus.BAD_REQUEST,
+            "Request validation failed"
+        )
+        problem.title = "Validation failed"
+
+        val errors = exception.bindingResult.fieldErrors.map { error ->
+            mapOf(
+                "field" to error.field,
+                "message" to error.defaultMessage)
+
+        }
+        problem.setProperty("errors", errors)
+
+        return problem
+    }
+
+
 }
