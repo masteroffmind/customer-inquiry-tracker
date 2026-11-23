@@ -2,9 +2,14 @@ package com.rakhman.customerinquirytracker.inquiry
 
 import com.rakhman.customerinquirytracker.inquiry.dto.ChangeStatusRequest
 import com.rakhman.customerinquirytracker.inquiry.dto.CreateInquiryRequest
+import com.rakhman.customerinquirytracker.inquiry.dto.InquiryPageResponse
 import com.rakhman.customerinquirytracker.inquiry.dto.InquiryResponse
 import com.rakhman.customerinquirytracker.inquiry.dto.UpdateInquiryRequest
 import jakarta.validation.Valid
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
@@ -65,6 +71,31 @@ class InquiryController (
     fun changeStatus(@PathVariable id: Long, @RequestBody request: ChangeStatusRequest): ResponseEntity<InquiryResponse> {
         val response = inquiryService.changeStatus(id, request.status)
         return ResponseEntity.ok(response.toResponse())
+    }
+    @GetMapping
+    fun getInquiries(
+        /**
+         * @RequestParam связывает параметр метода контроллера с параметром запроса после ? в URL
+         * пример запроса: /api/v1/inquiries?status=NEW
+         */
+        @RequestParam(required = false) status: InquiryStatus?,
+        @RequestParam(required = false) priority: InquiryPriority?,
+        @PageableDefault(
+            size = 20,
+            sort = ["createdAt"],
+            direction = Sort.Direction.DESC
+        )
+        pageable: Pageable
+    ): ResponseEntity<InquiryPageResponse> {
+        val page = inquiryService.findByFilters(status, priority, pageable)
+        val response = InquiryPageResponse(
+            content = page.content.map { inquiry -> inquiry.toResponse() },
+            page = page.number,
+            size = page.size,
+            totalElements = page.totalElements,
+            totalPages = page.totalPages
+        )
+        return ResponseEntity.ok(response)
     }
 
 }

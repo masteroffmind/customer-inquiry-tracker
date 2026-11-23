@@ -1,9 +1,11 @@
 package com.rakhman.customerinquirytracker.inquiry
 
-import com.rakhman.customerinquirytracker.inquiry.dto.ChangeStatusRequest
+
 import com.rakhman.customerinquirytracker.inquiry.dto.UpdateInquiryRequest
+import org.springframework.data.domain.Page
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.stereotype.Service
+import org.springframework.data.domain.Pageable
 
 //Позволит Spring обнаруживать класс, параметр
 //параметр конструктора указывает, какой репозиторий передать при создании сервиса.
@@ -75,4 +77,10 @@ class InquiryService(
         inquiry.status = newStatus
         return inquiry
     }
+
+    @Transactional(readOnly = true)
+    fun findByFilters(status: InquiryStatus?, priority: InquiryPriority?, pageable: Pageable): Page<Inquiry> {
+        return inquiryRepository.findByFilters(status, priority, pageable)
+    }
+
 }

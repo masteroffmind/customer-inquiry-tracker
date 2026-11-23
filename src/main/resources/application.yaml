@@ -5,6 +5,10 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate #БД создается только миграциями FlyWay
+  data:
+    web:
+      pageable:
+        max-page-size: 100
 
 management:
   endpoints:
