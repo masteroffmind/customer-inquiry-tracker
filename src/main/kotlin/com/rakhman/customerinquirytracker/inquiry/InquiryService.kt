@@ -19,8 +19,10 @@ class InquiryService(
      * и регистрирует его в контексте Spring
      * такой управляемый объект называется бином
      */
-    fun create(title:String, customerName: String, customerEmail: String): Inquiry {
+    fun create(title:String, customerName: String, customerEmail: String, description: String?, priority: InquiryPriority): Inquiry {
         val inquiry = Inquiry(title, customerName, customerEmail)
+        inquiry.description = description
+        inquiry.priority = priority
         return inquiryRepository.save(inquiry)
     }
     fun getById(id:Long) : Inquiry{

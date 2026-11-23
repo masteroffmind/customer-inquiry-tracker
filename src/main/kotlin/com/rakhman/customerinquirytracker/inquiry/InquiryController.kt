@@ -37,7 +37,7 @@ class InquiryController (
         /**
          * аннотация Valid включает проверку ограничений DTO, обращаясь к полям, которые покрыты аннотациями
          */
-        val savedInquiry = inquiryService.create(title = request.title, customerName = request.customerName, customerEmail = request.customerEmail)
+        val savedInquiry = inquiryService.create(title = request.title, customerName = request.customerName, customerEmail = request.customerEmail, description = request.description, priority = request.priority)
         val response = savedInquiry.toResponse()//Собирает DTO
         val location = URI.create("/api/v1/inquiries/${response.id}")//Построение адреса конкретного обращения
         return ResponseEntity.created(location).body(response)//Собирает полноценный HTTP-ответ со статусом Created, заголовком и DTO в теле
