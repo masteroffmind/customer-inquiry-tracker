@@ -11,7 +11,7 @@ data class CreateInquiryRequest(
     val title: String,
 
     @field:NotBlank
-    @field:Size(min = 3, max = 100)
+    @field:Size(max = 100)
     val customerName: String,
 
     @field:NotBlank
